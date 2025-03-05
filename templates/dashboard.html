@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de Bord - Système d'Alerte Précoce IA Multi-Maladies{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">
+    <i class="fas fa-chart-line me-2"></i>
+    Tableau de Bord de Surveillance des Maladies
+</h1>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Maladies Surveillées</h5>
+                <h2 class="display-4">{{ diseases|length }}</h2>
+                <p class="card-text">Modèles de maladies actifs</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Zones à Faible Risque</h5>
+                <h2 class="display-4" id="lowRiskCount">--</h2>
+                <p class="card-text">Niveau de risque < 0.3</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Zones à Risque Moyen</h5>
+                <h2 class="display-4" id="mediumRiskCount">--</h2>
+                <p class="card-text">Niveau de risque 0.3 - 0.7</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white h-100">
+            <div class="card-body">
+                <h5 class="card-title">Zones à Haut Risque</h5>
+                <h2 class="display-4" id="highRiskCount">--</h2>
+                <p class="card-text">Niveau de risque > 0.7</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Carte des Risques de Maladies</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="mapDiseaseDropdown" data-bs-toggle="dropdown">
+                        Sélectionner une Maladie
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="mapDiseaseDropdown">
+                        {% for disease in diseases %}
+                        <li><a class="dropdown-item disease-selector" href="#" data-disease="{{ disease.name }}">{{ disease.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="riskMap" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Distribution des Risques</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="riskDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Prédictions Récentes</h5>
+                <a href="#" class="btn btn-sm btn-primary">Voir Tout</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Maladie</th>
+                                <th>Localisation</th>
+                                <th>Niveau de Risque</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prediction in predictions %}
+                            <tr>
+                                <td>{{ prediction.disease.name }}</td>
+                                <td>{{ prediction.location }}</td>
+                                <td>
+                                    {% if prediction.risk_level < 0.3 %}
+                                    <span class="badge bg-success">Faible ({{ "%.2f"|format(prediction.risk_level) }})</span>
+                                    {% elif prediction.risk_level < 0.7 %}
+                                    <span class="badge bg-warning text-dark">Moyen ({{ "%.2f"|format(prediction.risk_level) }})</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Élevé ({{ "%.2f"|format(prediction.risk_level) }})</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ prediction.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <a href="{{ url_for('disease_detail', disease_id=prediction.disease.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Analyse des Tendances des Maladies</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="trendDiseaseDropdown" data-bs-toggle="dropdown">
+                        Sélectionner une Maladie
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="trendDiseaseDropdown">
+                        {% for disease in diseases %}
+                        <li><a class="dropdown-item trend-disease-selector" href="#" data-disease="{{ disease.name }}">{{ disease.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="diseaseTrendChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sample data for demonstration
+        const sampleLocations = [
+            { location: 'New York', lat: 40.7128, lng: -74.0060, risk: 0.8 },
+            { location: 'Los Angeles', lat: 34.0522, lng: -118.2437, risk: 0.3 },
+            { location: 'Chicago', lat: 41.8781, lng: -87.6298, risk: 0.5 },
+            { location: 'Houston', lat: 29.7604, lng: -95.3698, risk: 0.7 },
+            { location: 'Phoenix', lat: 33.4484, lng: -112.0740, risk: 0.2 },
+            { location: 'Philadelphia', lat: 39.9526, lng: -75.1652, risk: 0.6 },
+            { location: 'San Antonio', lat: 29.4241, lng: -98.4936, risk: 0.4 },
+            { location: 'San Diego', lat: 32.7157, lng: -117.1611, risk: 0.3 },
+            { location: 'Dallas', lat: 32.7767, lng: -96.7970, risk: 0.7 },
+            { location: 'San Francisco', lat: 37.7749, lng: -122.4194, risk: 0.5 }
+        ];
+
+        // Count risk levels
+        const lowRisk = sampleLocations.filter(loc => loc.risk < 0.3).length;
+        const mediumRisk = sampleLocations.filter(loc => loc.risk >= 0.3 && loc.risk <= 0.7).length;
+        const highRisk = sampleLocations.filter(loc => loc.risk > 0.7).length;
+        
+        document.getElementById('lowRiskCount').textContent = lowRisk;
+        document.getElementById('mediumRiskCount').textContent = mediumRisk;
+        document.getElementById('highRiskCount').textContent = highRisk;
+
+        // Risk distribution chart
+        const riskCtx = document.getElementById('riskDistributionChart').getContext('2d');
+        const riskChart = new Chart(riskCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Risque Faible', 'Risque Moyen', 'Risque Élevé'],
+                datasets: [{
+                    data: [lowRisk, mediumRisk, highRisk],
+                    backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Disease trend chart (sample data)
+        const trendCtx = document.getElementById('diseaseTrendChart').getContext('2d');
+        const trendChart = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'],
+                datasets: [{
+                    label: 'Niveau de Risque Moyen',
+                    data: [0.2, 0.3, 0.5, 0.4, 0.6, 0.7, 0.5],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1,
+                        title: {
+                            display: true,
+                            text: 'Niveau de Risque'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Mois'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initialize map (placeholder for actual map implementation)
+        const mapDiv = document.getElementById('riskMap');
+        mapDiv.innerHTML = '<div class="d-flex justify-content-center align-items-center h-100"><p class="text-muted">La visualisation de la carte serait affichée ici. L\'intégration avec des bibliothèques de cartographie comme Leaflet ou Google Maps serait implémentée dans un environnement de production.</p></div>';
+
+        // Disease selectors
+        document.querySelectorAll('.disease-selector').forEach(item => {
+            item.addEventListener('click', event => {
+                const diseaseName = event.target.getAttribute('data-disease');
+                document.getElementById('mapDiseaseDropdown').textContent = diseaseName;
+                // Here you would update the map with disease-specific data
+            });
+        });
+
+        document.querySelectorAll('.trend-disease-selector').forEach(item => {
+            item.addEventListener('click', event => {
+                const diseaseName = event.target.getAttribute('data-disease');
+                document.getElementById('trendDiseaseDropdown').textContent = diseaseName;
+                // Here you would update the trend chart with disease-specific data
+            });
+        });
+    });
+</script>
+{% endblock %}

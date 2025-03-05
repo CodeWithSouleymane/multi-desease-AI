@@ -1,0 +1,102 @@
+/* Main Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Navbar customization */
+.navbar-brand {
+    font-weight: 600;
+}
+
+/* Card customization */
+.card {
+    border-radius: 0.5rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+/* Dashboard stats cards */
+.card .display-4 {
+    font-weight: 600;
+}
+
+/* Footer */
+.footer {
+    margin-top: 2rem;
+    padding: 1.5rem 0;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Disease parameters form */
+.disease-params {
+    transition: all 0.3s ease;
+}
+
+/* Custom buttons */
+.btn {
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+/* Risk level indicators */
+.risk-low {
+    color: #198754;
+}
+
+.risk-medium {
+    color: #ffc107;
+}
+
+.risk-high {
+    color: #dc3545;
+}
+
+/* Prediction result page */
+.progress {
+    height: 30px;
+    border-radius: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Animation for alerts */
+.alert {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Prédiction de Maladies{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Prédiction de Risque de Maladie</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('predict') }}">
+                        <div class="mb-3">
+                            <label for="disease" class="form-label">Sélectionner une Maladie</label>
+                            <select class="form-select" id="disease" name="disease" required>
+                                <option value="" selected disabled>Choisir une maladie</option>
+                                {% for disease in diseases %}
+                                <option value="{{ disease.id }}">{{ disease.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Localisation</label>
+                            <input type="text" class="form-control" id="location" name="location" placeholder="Ville, Pays" required>
+                        </div>
+                        
+                        <div id="covid-params" class="disease-params" style="display: none;">
+                            <h4 class="mt-4 mb-3">Paramètres COVID-19</h4>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="population_density" class="form-label">Densité de Population (personnes/km²)</label>
+                                    <input type="number" class="form-control" id="population_density" name="population_density" min="0" step="0.01">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="vaccination_rate" class="form-label">Taux de Vaccination (%)</label>
+                                    <input type="number" class="form-control" id="vaccination_rate" name="vaccination_rate" min="0" max="100" step="0.01">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="mobility_index" class="form-label">Indice de Mobilité (0-100)</label>
+                                    <input type="number" class="form-control" id="mobility_index" name="mobility_index" min="0" max="100" step="0.01">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="hospital_beds" class="form-label">Lits d'Hôpital pour 1000 personnes</label>
+                                    <input type="number" class="form-control" id="hospital_beds" name="hospital_beds" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="influenza-params" class="disease-params" style="display: none;">
+                            <h4 class="mt-4 mb-3">Paramètres Grippe</h4>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="temperature" class="form-label">Température Moyenne (°C)</label>
+                                    <input type="number" class="form-control" id="temperature" name="temperature" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="humidity" class="form-label">Humidité Relative (%)</label>
+                                    <input type="number" class="form-control" id="humidity" name="humidity" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="flu_vaccination" class="form-label">Taux de Vaccination contre la Grippe (%)</label>
+                                    <input type="number" class="form-control" id="flu_vaccination" name="flu_vaccination" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="school_density" class="form-label">Écoles pour 10 000 personnes</label>
+                                    <input type="number" class="form-control" id="school_density" name="school_density" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="dengue-params" class="disease-params" style="display: none;">
+                            <h4 class="mt-4 mb-3">Paramètres Dengue</h4>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="rainfall" class="form-label">Précipitations Mensuelles (mm)</label>
+                                    <input type="number" class="form-control" id="rainfall" name="rainfall" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="temperature_dengue" class="form-label">Température Moyenne (°C)</label>
+                                    <input type="number" class="form-control" id="temperature_dengue" name="temperature_dengue" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="humidity_dengue" class="form-label">Humidité Relative (%)</label>
+                                    <input type="number" class="form-control" id="humidity_dengue" name="humidity_dengue" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="standing_water" class="form-label">Indice d'Eau Stagnante (0-1)</label>
+                                    <input type="number" class="form-control" id="standing_water" name="standing_water" min="0" max="1" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="malaria-params" class="disease-params" style="display: none;">
+                            <h4 class="mt-4 mb-3">Paramètres Paludisme</h4>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="rainfall_malaria" class="form-label">Précipitations Mensuelles (mm)</label>
+                                    <input type="number" class="form-control" id="rainfall_malaria" name="rainfall_malaria" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="temperature_malaria" class="form-label">Température Moyenne (°C)</label>
+                                    <input type="number" class="form-control" id="temperature_malaria" name="temperature_malaria" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="humidity_malaria" class="form-label">Humidité Relative (%)</label>
+                                    <input type="number" class="form-control" id="humidity_malaria" name="humidity_malaria" min="0" max="100" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="mosquito_density" class="form-label">Densité de Moustiques (par piège)</label>
+                                    <input type="number" class="form-control" id="mosquito_density" name="mosquito_density" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="bednet_usage" class="form-label">Utilisation de Moustiquaires (%)</label>
+                                    <input type="number" class="form-control" id="bednet_usage" name="bednet_usage" min="0" max="100" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Prédire le Risque</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const diseaseSelect = document.getElementById('disease');
+        const diseaseParams = document.querySelectorAll('.disease-params');
+        
+        diseaseSelect.addEventListener('change', function() {
+            // Cacher toutes les sections de paramètres
+            diseaseParams.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Afficher la section pertinente en fonction de la maladie sélectionnée
+            const selectedOption = diseaseSelect.options[diseaseSelect.selectedIndex].text;
+            
+            if (selectedOption === 'COVID-19') {
+                document.getElementById('covid-params').style.display = 'block';
+            } else if (selectedOption === 'Grippe') {
+                document.getElementById('influenza-params').style.display = 'block';
+            } else if (selectedOption === 'Dengue') {
+                document.getElementById('dengue-params').style.display = 'block';
+            } else if (selectedOption === 'Paludisme') {
+                document.getElementById('malaria-params').style.display = 'block';
+            }
+        });
+    });
+</script>
+{% endblock %}

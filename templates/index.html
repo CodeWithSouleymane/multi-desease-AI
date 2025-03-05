@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil - Système d'Alerte Précoce IA Multi-Maladies{% endblock %}
+
+{% block content %}
+<div class="row align-items-center">
+    <div class="col-lg-6">
+        <h1 class="display-4 mb-4">Système d'Alerte Précoce IA Multi-Maladies</h1>
+        <p class="lead mb-4">
+            Notre système d'IA avancé prédit les épidémies avant qu'elles ne se produisent, aidant les professionnels de la santé et les décideurs à prendre des mesures proactives pour protéger la santé publique.
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                <i class="fas fa-chart-line me-2"></i>Accéder au Tableau de Bord
+            </a>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                <i class="fas fa-sign-in-alt me-2"></i>Connexion
+            </a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="fas fa-user-plus me-2"></i>Inscription
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <img src="{{ url_for('static', filename='img/hero-image.svg') }}" alt="Prédiction de Maladies par IA" class="img-fluid">
+    </div>
+</div>
+
+<hr class="my-5">
+
+<div class="row g-4 py-5">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-brain fa-4x text-primary mb-3"></i>
+                <h3 class="card-title">Prédictions Basées sur l'IA</h3>
+                <p class="card-text">Notre système utilise des algorithmes avancés d'apprentissage automatique pour analyser les modèles et prédire les épidémies avec une grande précision.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-virus fa-4x text-primary mb-3"></i>
+                <h3 class="card-title">Maladies Multiples</h3>
+                <p class="card-text">Du COVID-19 à la grippe, la dengue et le paludisme, notre système surveille et prédit diverses maladies infectieuses.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-bell fa-4x text-primary mb-3"></i>
+                <h3 class="card-title">Alertes Précoces</h3>
+                <p class="card-text">Recevez des alertes en temps opportun lorsque notre système détecte des épidémies potentielles, permettant une réponse et une intervention rapides.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Maladies Prises en Charge</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">COVID-19</h5>
+                        <p class="card-text">Surveillance et prédiction des épidémies de coronavirus basées sur divers facteurs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Grippe</h5>
+                        <p class="card-text">Prédiction de la grippe saisonnière avec spécificité régionale et analyse des variants.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Dengue</h5>
+                        <p class="card-text">Prédiction des épidémies de dengue basée sur les données climatiques et les modèles historiques.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Paludisme</h5>
+                        <p class="card-text">Évaluation des risques de paludisme à l'aide de facteurs environnementaux et démographiques.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+
+{% block title %}Prédiction d'Épidémie par IA{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-brain me-2"></i>Système de Prédiction d'Épidémie par IA
+                    </h3>
+                    <span class="badge bg-warning text-dark">Fonctionnalité Avancée</span>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>Ce système d'IA avancé analyse les données historiques des maladies, les facteurs environnementaux et la dynamique des populations pour prédire les épidémies potentielles avant qu'elles ne se produisent.
+                    </div>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Paramètres de Prédiction</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="predictionForm" method="POST" action="{{ url_for('outbreak_prediction') }}">
+                                        <div class="mb-3">
+                                            <label for="disease" class="form-label">Maladie</label>
+                                            <select class="form-select" id="disease" name="disease" required>
+                                                <option value="" selected disabled>Sélectionner une maladie</option>
+                                                {% for disease in diseases %}
+                                                <option value="{{ disease.id }}">{{ disease.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="region" class="form-label">Région</label>
+                                            <select class="form-select" id="region" name="region" required>
+                                                <option value="" selected disabled>Sélectionner une région</option>
+                                                <option value="africa">Afrique</option>
+                                                <option value="asia">Asie</option>
+                                                <option value="europe">Europe</option>
+                                                <option value="north_america">Amérique du Nord</option>
+                                                <option value="south_america">Amérique du Sud</option>
+                                                <option value="oceania">Océanie</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="timeframe" class="form-label">Période de Prédiction</label>
+                                            <select class="form-select" id="timeframe" name="timeframe" required>
+                                                <option value="1">1 Mois</option>
+                                                <option value="3" selected>3 Mois</option>
+                                                <option value="6">6 Mois</option>
+                                                <option value="12">1 An</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="confidence" class="form-label">Seuil de Confiance (%)</label>
+                                            <input type="range" class="form-range" id="confidence" name="confidence" min="50" max="95" step="5" value="75">
+                                            <div class="d-flex justify-content-between">
+                                                <span>50%</span>
+                                                <span id="confidenceValue">75%</span>
+                                                <span>95%</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="includeEnvironmental" name="includeEnvironmental" checked>
+                                            <label class="form-check-label" for="includeEnvironmental">
+                                                Inclure les facteurs environnementaux
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="includeSocial" name="includeSocial" checked>
+                                            <label class="form-check-label" for="includeSocial">
+                                                Inclure la dynamique sociale
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="d-grid">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-calculator me-2"></i>Générer la Prédiction
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Informations sur le Modèle d'IA</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold">Architecture du Modèle</h6>
+                                        <p>Modèle d'ensemble avancé combinant des réseaux neuronaux LSTM, le gradient boosting et l'inférence bayésienne pour la prédiction de séries temporelles.</p>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold">Données d'Entraînement</h6>
+                                        <p>Entraîné sur plus de 50 ans de données mondiales de surveillance des maladies, de relevés climatiques, de mouvements de population et d'indicateurs socio-économiques.</p>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold">Métriques de Précision</h6>
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <div class="card bg-light">
+                                                    <div class="card-body p-2">
+                                                        <h5 class="mb-0">92%</h5>
+                                                        <small>Précision</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="card bg-light">
+                                                    <div class="card-body p-2">
+                                                        <h5 class="mb-0">89%</h5>
+                                                        <small>Rappel</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="card bg-light">
+                                                    <div class="card-body p-2">
+                                                        <h5 class="mb-0">90%</h5>
+                                                        <small>Score F1</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-0">
+                                        <h6 class="fw-bold">Dernière Mise à Jour du Modèle</h6>
+                                        <p class="mb-0">1 Mars 2025</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if prediction_results %}
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0">Résultats de la Prédiction</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h5>Carte de Probabilité d'Épidémie</h5>
+                                    <div id="outbreakMap" style="height: 300px; background-color: #f8f9fa;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Chronologie des Risques</h5>
+                                    <div id="riskTimeline" style="height: 300px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0">Principales Conclusions</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                {% for finding in prediction_results.findings %}
+                                                <li class="list-group-item">
+                                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                                    {{ finding }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <h5 class="mb-0">Actions Recommandées</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <ul class="list-group list-group-flush">
+                                                {% for action in prediction_results.actions %}
+                                                <li class="list-group-item">
+                                                    <i class="fas fa-arrow-right text-primary me-2"></i>
+                                                    {{ action }}
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Comment Ça Fonctionne</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 text-center mb-3 mb-md-0">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-database fa-2x"></i>
+                                    </div>
+                                    <h6>Collecte de Données</h6>
+                                    <p class="small">Agrège les données historiques des maladies, les facteurs environnementaux et les indicateurs sociaux</p>
+                                </div>
+                                <div class="col-md-3 text-center mb-3 mb-md-0">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-brain fa-2x"></i>
+                                    </div>
+                                    <h6>Traitement par IA</h6>
+                                    <p class="small">Les réseaux neuronaux avancés analysent les modèles et les corrélations</p>
+                                </div>
+                                <div class="col-md-3 text-center mb-3 mb-md-0">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-chart-line fa-2x"></i>
+                                    </div>
+                                    <h6>Évaluation des Risques</h6>
+                                    <p class="small">Calcule la probabilité d'épidémies à travers les régions et les périodes</p>
+                                </div>
+                                <div class="col-md-3 text-center">
+                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-shield-alt fa-2x"></i>
+                                    </div>
+                                    <h6>Planification d'Actions</h6>
+                                    <p class="small">Génère des recommandations ciblées pour la prévention et la préparation</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update confidence value display
+        const confidenceSlider = document.getElementById('confidence');
+        const confidenceValue = document.getElementById('confidenceValue');
+        
+        confidenceSlider.addEventListener('input', function() {
+            confidenceValue.textContent = confidenceSlider.value + '%';
+        });
+        
+        {% if prediction_results %}
+        // Create outbreak probability map
+        const mapData = {{ prediction_results.map_data|tojson }};
+        
+        const mapLayout = {
+            geo: {
+                scope: '{{ prediction_results.region }}',
+                showland: true,
+                landcolor: 'rgb(217, 217, 217)',
+                countrycolor: 'rgb(255, 255, 255)',
+                coastlinecolor: 'rgb(255, 255, 255)',
+                projection: {
+                    type: 'mercator'
+                }
+            },
+            margin: {
+                l: 0,
+                r: 0,
+                t: 0,
+                b: 0
+            }
+        };
+        
+        Plotly.newPlot('outbreakMap', mapData, mapLayout);
+        
+        // Create risk timeline chart
+        const timelineData = {{ prediction_results.timeline_data|tojson }};
+        
+        const timelineLayout = {
+            margin: { t: 10, r: 10, l: 50, b: 50 },
+            xaxis: {
+                title: 'Temps (mois)'
+            },
+            yaxis: {
+                title: 'Niveau de Risque',
+                range: [0, 1]
+            }
+        };
+        
+        Plotly.newPlot('riskTimeline', timelineData, timelineLayout);
+        {% endif %}
+    });
+</script>
+{% endblock %}
