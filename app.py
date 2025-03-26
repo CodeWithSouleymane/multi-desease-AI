@@ -83,50 +83,55 @@ def simulate_prediction(disease_name, input_data):
     # Simple rule-based risk calculation for demonstration
     risk_level = 0.5  # Default medium risk
     
+    # Ensure all numeric values in input_data are properly converted to float
+    for key in input_data:
+        if isinstance(input_data[key], str) and input_data[key].replace('.', '', 1).isdigit():
+            input_data[key] = float(input_data[key])
+    
     if disease_name.lower() == 'covid-19':
         # Higher risk with: high population density, low vaccination, high mobility, low hospital beds
-        if 'population_density' in input_data and input_data['population_density'] > 1000:
+        if 'population_density' in input_data and float(input_data['population_density']) > 1000:
             risk_level += 0.2
-        if 'vaccination_rate' in input_data and input_data['vaccination_rate'] < 50:
+        if 'vaccination_rate' in input_data and float(input_data['vaccination_rate']) < 50:
             risk_level += 0.2
-        if 'mobility_index' in input_data and input_data['mobility_index'] > 70:
+        if 'mobility_index' in input_data and float(input_data['mobility_index']) > 70:
             risk_level += 0.1
-        if 'hospital_beds' in input_data and input_data['hospital_beds'] < 3:
+        if 'hospital_beds' in input_data and float(input_data['hospital_beds']) < 3:
             risk_level += 0.1
             
     elif disease_name.lower() == 'influenza':
         # Higher risk with: low temperature, low humidity, low vaccination, high school density
-        if 'temperature' in input_data and input_data['temperature'] < 10:
+        if 'temperature' in input_data and float(input_data['temperature']) < 10:
             risk_level += 0.2
-        if 'humidity' in input_data and input_data['humidity'] < 40:
+        if 'humidity' in input_data and float(input_data['humidity']) < 40:
             risk_level += 0.1
-        if 'flu_vaccination' in input_data and input_data['flu_vaccination'] < 40:
+        if 'flu_vaccination' in input_data and float(input_data['flu_vaccination']) < 40:
             risk_level += 0.2
-        if 'school_density' in input_data and input_data['school_density'] > 5:
+        if 'school_density' in input_data and float(input_data['school_density']) > 5:
             risk_level += 0.1
             
     elif disease_name.lower() == 'dengue':
         # Higher risk with: high rainfall, high temperature, high humidity, high standing water
-        if 'rainfall' in input_data and input_data['rainfall'] > 200:
+        if 'rainfall' in input_data and float(input_data['rainfall']) > 200:
             risk_level += 0.2
-        if 'temperature_dengue' in input_data and input_data['temperature_dengue'] > 30:
+        if 'temperature_dengue' in input_data and float(input_data['temperature_dengue']) > 30:
             risk_level += 0.2
-        if 'humidity_dengue' in input_data and input_data['humidity_dengue'] > 70:
+        if 'humidity_dengue' in input_data and float(input_data['humidity_dengue']) > 70:
             risk_level += 0.1
-        if 'standing_water' in input_data and input_data['standing_water'] > 0.5:
+        if 'standing_water' in input_data and float(input_data['standing_water']) > 0.5:
             risk_level += 0.2
             
     elif disease_name.lower() == 'malaria':
         # Higher risk with: high rainfall, high temperature, high humidity, high mosquito density, low bednet usage
-        if 'rainfall_malaria' in input_data and input_data['rainfall_malaria'] > 200:
+        if 'rainfall_malaria' in input_data and float(input_data['rainfall_malaria']) > 200:
             risk_level += 0.1
-        if 'temperature_malaria' in input_data and input_data['temperature_malaria'] > 28:
+        if 'temperature_malaria' in input_data and float(input_data['temperature_malaria']) > 28:
             risk_level += 0.1
-        if 'humidity_malaria' in input_data and input_data['humidity_malaria'] > 70:
+        if 'humidity_malaria' in input_data and float(input_data['humidity_malaria']) > 70:
             risk_level += 0.1
-        if 'mosquito_density' in input_data and input_data['mosquito_density'] > 100:
+        if 'mosquito_density' in input_data and float(input_data['mosquito_density']) > 100:
             risk_level += 0.2
-        if 'bednet_usage' in input_data and input_data['bednet_usage'] < 50:
+        if 'bednet_usage' in input_data and float(input_data['bednet_usage']) < 50:
             risk_level += 0.1
     
     # Cap risk level between 0 and 1

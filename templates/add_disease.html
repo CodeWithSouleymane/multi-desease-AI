@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Disease{% endblock %}
+{% block title %}Ajouter une Maladie{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -8,12 +8,12 @@
         <div class="col-md-8 offset-md-2">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Add New Disease</h3>
+                    <h3 class="mb-0">Ajouter une Nouvelle Maladie</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('add_disease') }}">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Disease Name</label>
+                            <label for="name" class="form-label">Nom de la Maladie</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         
@@ -23,23 +23,23 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="symptoms" class="form-label">Symptoms</label>
+                            <label for="symptoms" class="form-label">Symptômes</label>
                             <textarea class="form-control" id="symptoms" name="symptoms" rows="3" required></textarea>
-                            <div class="form-text">Enter common symptoms separated by commas</div>
+                            <div class="form-text">Entrez les symptômes courants séparés par des virgules</div>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="risk_factors" class="form-label">Risk Factors</label>
+                            <label for="risk_factors" class="form-label">Facteurs de Risque</label>
                             <textarea class="form-control" id="risk_factors" name="risk_factors" rows="3" required></textarea>
-                            <div class="form-text">Enter common risk factors separated by commas</div>
+                            <div class="form-text">Entrez les facteurs de risque courants séparés par des virgules</div>
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                             <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-times me-2"></i>Cancel
+                                <i class="fas fa-times me-2"></i>Annuler
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Disease
+                                <i class="fas fa-save me-2"></i>Enregistrer la Maladie
                             </button>
                         </div>
                     </form>

@@ -8,76 +8,377 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #4CAF50;
+            --warning-color: #ff9800;
+            --danger-color: #f44336;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+        }
+        
+        .navbar {
+            padding: 0.8rem 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.8rem 1.2rem !important;
+            border-radius: 8px;
+            margin: 0 0.2rem;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 10px;
+        }
+        
+        .dropdown-menu {
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border: none;
+            padding: 1rem 0;
+        }
+        
+        .dropdown-item {
+            padding: 0.7rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .dropdown-item i {
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover i {
+            transform: scale(1.2);
+        }
+        
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .user-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .auth-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 0 0.3rem;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .auth-btn-outline {
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: white;
+        }
+        
+        .auth-btn-outline:hover {
+            background-color: white;
+            color: var(--primary-color) !important;
+        }
+        
+        .auth-btn-filled {
+            background-color: white;
+            color: var(--primary-color);
+        }
+        
+        .auth-btn-filled:hover {
+            background-color: var(--accent-color);
+            color: white !important;
+        }
+        
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+        
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        
+        .navbar-toggler-icon {
+            width: 1.5em;
+            height: 1.5em;
+        }
+        
+        .badge-pill-custom {
+            padding: 0.35em 0.8em;
+            font-size: 0.7em;
+            font-weight: 600;
+            border-radius: 50px;
+        }
+        
+        @media (max-width: 992px) {
+            .nav-link {
+                padding: 0.6rem 1rem !important;
+                margin: 0.3rem 0;
+            }
+            
+            .dropdown-menu {
+                border: none;
+                box-shadow: none;
+                padding: 0 0 0 1rem;
+                margin: 0;
+            }
+            
+            .dropdown-item {
+                padding: 0.5rem 1rem;
+            }
+            
+            .auth-btn {
+                margin: 0.3rem 0;
+                display: block;
+                text-align: center;
+            }
+        }
+    </style>
+    
     {% block head %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <!-- Ultra Modern Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="fas fa-virus-slash me-2"></i>
-                Système d'Alerte Précoce des Maladies
+            <!-- Brand with Animation -->
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+                <div class="me-3 position-relative" style="width: 40px; height: 40px;">
+                    <i class="fas fa-shield-virus position-absolute" style="font-size: 2rem; color: rgba(255, 255, 255, 0.9); top: 0; left: 0;"></i>
+                    <i class="fas fa-microscope position-absolute" style="font-size: 1rem; color: #4cc9f0; bottom: 0; right: 0;"></i>
+                </div>
+                <div>
+                    <span class="d-block" style="line-height: 1.2;">MediGuard</span>
+                    <small class="text-light opacity-75" style="font-size: 0.7rem; letter-spacing: 1px;">SYSTÈME D'ALERTE IA</small>
+                </div>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            
+            <!-- Mobile Toggle with Animation -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarContent" aria-controls="navbarContent" 
+                    aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+            
+            <!-- Navbar Content -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Main Navigation -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Accueil</a>
-                    </li>
-                    {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">Tableau de Bord</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('predict') }}">Prédire</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('alerts') }}">Alertes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('outbreak_prediction') }}">
-                            <i class="fas fa-brain me-1"></i>Prédiction IA
-                            <span class="badge bg-warning text-dark rounded-pill ms-1" style="font-size: 0.7em;">Nouveau</span>
+                        <a class="nav-link {% if request.path == url_for('index') %}active{% endif %}" 
+                           href="{{ url_for('index') }}">
+                           <i class="fas fa-home me-2"></i> Accueil
                         </a>
                     </li>
-                    {% if current_user.role == 'admin' %}
+                    
+                    {% if current_user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin') }}">Admin</a>
+                        <a class="nav-link {% if request.path == url_for('dashboard') %}active{% endif %}" 
+                           href="{{ url_for('dashboard') }}">
+                           <i class="fas fa-chart-line me-2"></i> Tableau de Bord
+                        </a>
+                    </li>
+                    
+                    <!-- Prediction Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.path == url_for('predict') or request.path == url_for('outbreak_prediction') %}active{% endif %}" 
+                           href="#" id="predictionDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                           <i class="fas fa-microscope me-2"></i> Prédictions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="predictionDropdown">
+                            <li>
+                                <a class="dropdown-item {% if request.path == url_for('predict') %}active{% endif %}" 
+                                   href="{{ url_for('predict') }}">
+                                    <i class="fas fa-virus me-2" style="color: var(--primary-color);"></i> Prédiction de Risque
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if request.path == url_for('outbreak_prediction') %}active{% endif %}" 
+                                   href="{{ url_for('outbreak_prediction') }}">
+                                    <i class="fas fa-brain me-2" style="color: var(--primary-color);"></i> Prédiction d'Épidémie IA
+                                    <span class="badge bg-warning text-dark badge-pill-custom ms-2">Nouveau</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == url_for('alerts') %}active{% endif %}" 
+                           href="{{ url_for('alerts') }}">
+                           <i class="fas fa-bell me-2"></i> Alertes
+                           {% if current_user.alerts.filter_by(active=True).count() > 0 %}
+                           <span class="badge rounded-pill bg-danger badge-pill-custom">
+                               {{ current_user.alerts.filter_by(active=True).count() }}
+                           </span>
+                           {% endif %}
+                        </a>
+                    </li>
+                    
+                    {% if current_user.role == 'admin' %}
+                    <!-- Admin Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.path == url_for('admin') or request.path == url_for('add_disease') %}active{% endif %}" 
+                           href="#" id="adminDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                           <i class="fas fa-user-shield me-2"></i> Administration
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                            <li>
+                                <a class="dropdown-item {% if request.path == url_for('admin') %}active{% endif %}" 
+                                   href="{{ url_for('admin') }}">
+                                    <i class="fas fa-tachometer-alt me-2" style="color: var(--primary-color);"></i> Tableau de Bord Admin
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if request.path == url_for('add_disease') %}active{% endif %}" 
+                                   href="{{ url_for('add_disease') }}">
+                                    <i class="fas fa-plus-circle me-2" style="color: var(--primary-color);"></i> Ajouter une Maladie
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-users me-2" style="color: var(--primary-color);"></i> Gérer les Utilisateurs
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-database me-2" style="color: var(--primary-color);"></i> Journaux Système
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                     {% endif %}
                     {% endif %}
                 </ul>
-                <ul class="navbar-nav">
+                
+                <!-- User Menu -->
+                <ul class="navbar-nav align-items-center">
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <form action="{{ url_for('logout') }}" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-link nav-link border-0 bg-transparent">
-                                <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
-                            </button>
-                        </form>
-                    </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i> {{ current_user.username }}
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" 
+                           id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-avatar me-2">
+                                {{ current_user.username[0].upper() }}
+                            </div>
+                            <div class="d-none d-md-block">
+                                <span class="d-block" style="line-height: 1.2; font-weight: 600;">{{ current_user.username }}</span>
+                                <small class="text-light opacity-75" style="font-size: 0.7rem;">
+                                    {% if current_user.role == 'admin' %}Administrateur{% else %}Utilisateur{% endif %}
+                                </small>
+                            </div>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#">Profil</a></li>
-                            <li><a class="dropdown-item" href="#">Paramètres</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li class="dropdown-header">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-3">
+                                        {{ current_user.username[0].upper() }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ current_user.username }}</div>
+                                        <div class="small text-muted">{{ current_user.email }}</div>
+                                    </div>
+                                </div>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Déconnexion</a></li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user-circle me-2" style="color: var(--primary-color);"></i> Mon Profil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-history me-2" style="color: var(--primary-color);"></i> Historique d'Activité
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cog me-2" style="color: var(--primary-color);"></i> Paramètres
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ url_for('logout') }}" method="POST" class="d-inline w-100">
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Connexion</a>
+                        <a class="nav-link auth-btn auth-btn-outline" href="{{ url_for('login') }}">
+                            <i class="fas fa-sign-in-alt me-2"></i> Connexion
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">Inscription</a>
+                        <a class="nav-link auth-btn auth-btn-filled" href="{{ url_for('register') }}">
+                            <i class="fas fa-user-plus me-2"></i> Inscription
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
